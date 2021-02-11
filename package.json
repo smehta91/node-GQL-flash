@@ -1,0 +1,23 @@
+{
+  "name": "node_GQL_flash",
+  "engines": {
+    "node": "14.15.1"
+  },
+  "version": "1.0.0",
+  "description": "Faster version of D11 GQL",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "yarn tsc"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.19.2",
+    "express": "^4.17.1",
+    "@graphql-tools/merge": "^6.2.7",
+    "@graphql-tools/load-files": "^6.2.5",
+    "graphql-tools": "^7.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.5"
+  }
+}

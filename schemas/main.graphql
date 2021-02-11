@@ -1,0 +1,16 @@
+type ContestSection {
+  id: Int!
+  name: String!
+  description: String!
+  totalContestCount: Int!
+  displayContestCount: Int!
+}
+type Query {
+  # If `withPromotions` TRUE, extra contest-sections are returned with promotions applied.
+  contestSections(
+    site: String!
+    matchId: Int!
+    tourId: Int!
+    withPromotions: Boolean
+  ): [ContestSection]!
+}
