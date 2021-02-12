@@ -2,7 +2,7 @@ import { mergeTypeDefs } from "@graphql-tools/merge";
 import { loadFilesSync } from "@graphql-tools/load-files";
 import * as path from "path";
 import { ExpressContext, makeExecutableSchema } from "apollo-server-express";
-import { nativePostRequest } from "./utils/request";
+import { defaultHeaders, nativePostRequest } from "./utils/request";
 import { fetchContestSectionAndJoinedLeagues } from "./contest-section";
 import { contestSectionMapper } from "./contest-section-compute";
 
@@ -60,9 +60,7 @@ export const resolvers = () => {
         try {
           const roundTourSquad = await nativePostRequest(
             "/roundTourSquad",
-            {
-              "Content-Type": "application/json",
-            },
+            defaultHeaders,
             roundRequestData
           );
           const roundInfo = {
@@ -84,15 +82,19 @@ export const resolvers = () => {
             joinedContest: contestSections[0],
             roundTourSquad: roundTourSquad,
           };
-          return contestSections[0].data.sections.map((section: any) =>
-            contestSectionMapper(
-              apiResponse,
-              section,
-              args
-            )
-          );
+          const sections = [];
+          for (let i = 0; i < contestSections[0].data.sections.length; i++) {
+            sections.push(
+              contestSectionMapper(
+                apiResponse,
+                contestSections[0].data.sections[i],
+                args
+              )
+            );
+          }
+          return sections;
         } catch {
-          return []
+          return [];
         }
       },
     },

@@ -12,25 +12,27 @@ export const contestSectionMapper = (
   section: any,
   args: any
 ) => {
-  const sectionConfig = section["sectionConfig"]
-    ? section["sectionConfig"]
+  const sectionConfig = section.sectionConfig
+    ? section.sectionConfig
     : {};
+  const displayContests = []
+  for(let i=0; i< sectionConfig.showCardCount; i++) {
+    displayContests.push(contestCompute(apiResponse, section.leagues[i], args))
+  }
   return {
-    id: sectionConfig["id"],
-    name: sectionConfig["title"],
-    description: sectionConfig["subTitle"],
-    artwork: [{ src: sectionConfig["imgURL"] }],
-    totalContestCount: sectionConfig["totalCardCount"],
-    displayContestCount: sectionConfig["showCardCount"],
-    sortField: getSortField(sectionConfig["sortField"]),
-    sortType: sectionConfig["sortOrderAsc"] === 0 ? "DESC" : "ASC",
-    displayContests: section.leagues
-      .slice(0, sectionConfig.showCardCount)
-      .map((contest: any) => contestCompute(apiResponse, contest, args)),
+    id: sectionConfig.id,
+    name: sectionConfig.title,
+    description: sectionConfig.subTitle,
+    artwork: [{ src: sectionConfig.imgURL }],
+    totalContestCount: sectionConfig.totalCardCount,
+    displayContestCount: sectionConfig.showCardCount,
+    sortField: getSortField(sectionConfig.sortField),
+    sortType: sectionConfig.sortOrderAsc === 0 ? "DESC" : "ASC",
+    displayContests: displayContests,
     contests: [],
     tag: null,
-    contestsDisplayOrder: sectionConfig["contestsDisplayOrder"]
-      ? sectionConfig["contestsDisplayOrder"]
+    contestsDisplayOrder: sectionConfig.contestsDisplayOrder
+      ? sectionConfig.contestsDisplayOrder
       : "VERTICAL",
   };
 };
