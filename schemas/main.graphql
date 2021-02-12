@@ -27,8 +27,8 @@ type Currency {
 }
 
 enum ContestCategory {
-  PAID
-  FREE
+  paid
+  free
 }
 
 type Match {

@@ -4,6 +4,7 @@ import * as path from "path";
 import { ExpressContext, makeExecutableSchema } from "apollo-server-express";
 import { nativePostRequest } from "./utils/request";
 import { fetchContestSectionAndJoinedLeagues } from "./contest-section";
+import { contestSectionMapper } from "./contest-section-compute";
 
 const ROOT_SCHEMA_PATH = path.resolve(__dirname, "./schemas");
 
@@ -70,21 +71,29 @@ export const resolvers = () => {
           };
           const contestSections = await fetchContestSectionAndJoinedLeagues(
             context,
-            { site: args.site, roundId: args.matchId, siteId: SITE_ID_MAP[args.site], tourId: args.tourId },
+            {
+              site: args.site,
+              roundId: args.matchId,
+              siteId: SITE_ID_MAP[args.site],
+              tourId: args.tourId,
+            },
             roundInfo
           );
-          console.log(contestSections)
-        } catch {}
-
-        return [
-          {
-            id: 123,
-            name: "section",
-            description: "section description",
-            totalContestCount: 10,
-            displayContestCount: 1,
-          },
-        ];
+          const apiResponse = {
+            sections: contestSections[0],
+            joinedContest: contestSections[0],
+            roundTourSquad: roundTourSquad,
+          };
+          return contestSections[0].data.sections.map((section: any) =>
+            contestSectionMapper(
+              apiResponse,
+              section,
+              args
+            )
+          );
+        } catch {
+          return []
+        }
       },
     },
   };
