@@ -1,10 +1,138 @@
+interface IContest {
+  id: ID
+  _id: ID
+  inviteCode: String!
+  numberOfWinners: Int!
+  prizeAmount: Currency!
+  entryFee: Currency!
+  contestSize: Int!
+
+  # Grand, Special, Public, Private
+  contestType: String!
+  contestCategory: ContestCategory!
+  isGuaranteed: Boolean!
+  isMultipleEntry: Boolean!
+  # prize amount in words
+  prizeDisplayText: String
+}
+type Currency {
+  # amount value
+  amount: Float!
+
+  # Such as INR, USD
+  code: String!
+
+  # Such as ₹, $
+  symbol: String!
+}
+
+enum ContestCategory {
+  PAID
+  FREE
+}
+
+type Match {
+  id: Int!
+  name: String!
+  status: String!
+}
+
+type Tour {
+  id: Int!
+  name: String!
+}
+
+type Contest implements IContest {
+  competitorTracker: String
+
+  # Paid, Free
+  contestCategory: ContestCategory!
+
+  contestSize: Int!
+  maxAllowedTeams: Int
+
+  # Grand, Special, Public, Private
+  contestType: String!
+
+  # if the competition is of infinite size
+  isInfiniteEntry: Boolean!
+  currentSize: Int!
+
+  # winner percent of the contest
+  winnerPercent: Int!
+  entryFee: Currency!
+
+  # effective value after applying promotions, cash bonus or conditions of any kind
+  effectiveEntryFee: Currency
+  hasJoined: Boolean!
+  id: ID
+  _id: ID
+  inviteCode: String!
+  isGuaranteed: Boolean!
+  isMultipleEntry: Boolean!
+  multiTeamJoinEnabled: Boolean
+  isRecommended: Boolean!
+  match: Match!
+  tour: Tour!
+  site: String!
+  numberOfWinners: Int!
+  prizeAmount: Currency!
+
+  # true if the contest is a free entry league to be shown in cash contests
+  isFreeEntry: Boolean!
+
+  # Available balance to join the contest
+  availableBalance: Currency!
+
+  # prize amount in words
+  prizeDisplayText: String
+
+  # contest name
+  contestName: String
+
+  # contest tag
+  contestTag: String
+
+  isPartnerContest: Boolean
+
+  contestSectionLabel: String
+  #
+  balance: Currency
+  
+}
+enum SortField {
+  PRIZEAMOUNT
+  CONTESTSIZE
+  ENTRYAMOUNT
+  WINNER
+}
+type Tag {
+  text: String!
+}
+enum ContestsDisplayOrder {
+  HORIZONTAL
+  VERTICAL
+}
 type ContestSection {
   id: Int!
   name: String!
   description: String!
+  artwork: [Artwork!]!
   totalContestCount: Int!
   displayContestCount: Int!
+  displayContests: [Contest!]!
+  sortField: SortField
+  tag: Tag
+  contestsDisplayOrder: ContestsDisplayOrder
+  contests: [Contest!]!
 }
+type Artwork {
+  src: String!
+  height: Int
+  width: Int
+  type: String
+}
+
 type Query {
   # If `withPromotions` TRUE, extra contest-sections are returned with promotions applied.
   contestSections(
