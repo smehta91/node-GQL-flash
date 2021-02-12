@@ -6,16 +6,9 @@ const app = express();
 
 const apolloServer = new ApolloServer({
   schema: Schema,
-  //   context: (expressContext: ExpressContext) => {
-  //     const newHttp = {
-  //       post: http.post(expressContext.req, expressContext.res),
-  //       doRequest: http.doRequest(expressContext.req, expressContext.res),
-  //     };
-  //     expressContext.req._defaultIO = { HTTP: newHttp };
-  //     expressContext.req._loaders = {};
-  //     expressContext.req.response = expressContext.res;
-  //     return expressContext.req;
-  //   },
+  context: (expressContext) => {
+    return expressContext;
+  },
   playground: true,
 });
 apolloServer.applyMiddleware({ app });
