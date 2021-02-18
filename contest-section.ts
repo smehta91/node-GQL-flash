@@ -20,39 +20,31 @@ const getSections = (context: ExpressContext, args: any) => {
     args
   );
 };
-const getRoundInfo = (context: ExpressContext, args: any) => {
-  return nativePostRequest(
-    "/round",
-    defaultHeaders,
-    { site: args.site, roundId: args.roundId }
-  );
-};
+// const getRoundInfo = (context: ExpressContext, args: any) => {
+//   return nativePostRequest("/round", defaultHeaders, {
+//     site: args.site,
+//     roundId: args.roundId,
+//   });
+// };
 
 const getJoinedLeaguesBeforeRoundLock = async (
   context: ExpressContext,
   args: any
 ) => {
   try {
-    const roundInfo = await getRoundInfo(context, args);
-    const roundObj = roundInfo.round;
     const requestArgs = {
       ...args,
-      site: args.site,
-      tourId: roundObj.tourId,
-      contestDB: roundObj.contestDB,
-      roundCalcStatus: roundObj.RoundCalcStatus,
-      pcStreamingStatus: roundInfo.summary.pcStreamingStatus,
-      pcStack: roundInfo.summary.pcStack,
-      isRoundComplete:
-        roundObj.RoundCalcStatus === 3 || roundObj.RoundCalcStatus === 5 ? 1 : 0, //check if time check necessary
-      isRoundLocked: roundObj.DisplayStatus === 3 ? 1 : 0, //check if time check necessary,
-      isArchive: roundObj.IsArchive
+      site: "cricket",
+      tourId: 123,
+      contestDB: "voltdb2",
+      roundCalcStatus: 0,
+      pcStreamingStatus: 0,
+      pcStack: "classic",
+      isRoundComplete: 0,
+      isRoundLocked: 0,
+      isArchive: 0,
     };
-    if (
-      roundInfo.summary &&
-      roundInfo.summary.PCStatus &&
-      Number(roundInfo.summary.PCStatus) >= 2
-    ) {
+    if (false) {
       // post round lock
     } else {
       // pre round lock
