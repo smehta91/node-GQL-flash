@@ -10,7 +10,7 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "strict": true,
-    "target": "es6",
+    "target": "ES2017",
     "incremental": true,
     "skipLibCheck": true
   },

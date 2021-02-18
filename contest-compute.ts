@@ -49,9 +49,6 @@ export const contestCompute = (apiResponse: any, contest: any, args: any) => {
       : convertToWordsForIndianCurrency(0), // amount to word
     numberOfWinners: contest.noOfWinners,
     site: args.site,
-    // hasJoined: !!apiResponse.joinedContest.joinedContests.find(
-    //   (joinedCnts: any) => joinedCnts.contestId"] === contest.contestId"]
-    // ),
     hasJoined: false,
     entryFee: {
       code: "INR",

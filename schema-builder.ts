@@ -37,66 +37,66 @@ type ContestSectionsArgs = {
   tourId: number;
   withPromotions?: boolean;
 };
-
+const contestSectionResolver = async (
+  parent: unknown,
+  args: ContestSectionsArgs,
+  context: ExpressContext,
+  info: unknown
+) => {
+  // const arguments = {
+  //   siteId: SITE_ID_MAP[args.site],
+  //   site: args.site,
+  //   tourId: args.tourId,
+  //   roundId: args.matchId,
+  // };
+  const roundRequestData = {
+    roundId: args.matchId,
+    site: args.site,
+  };
+  try {
+    const roundTourSquad = await nativePostRequest(
+      "/roundTourSquad",
+      defaultHeaders,
+      roundRequestData
+    );
+    const roundInfo = {
+      round: roundTourSquad.round,
+      currentDateTime: Date.now(),
+    };
+    const contestSections = await fetchContestSectionAndJoinedLeagues(
+      context,
+      {
+        site: args.site,
+        roundId: args.matchId,
+        siteId: SITE_ID_MAP[args.site],
+        tourId: args.tourId,
+      },
+      roundInfo
+    );
+    const apiResponse = {
+      sections: contestSections[0],
+      joinedContest: contestSections[1],
+      roundTourSquad: roundTourSquad,
+    };
+    const sections = [];
+    for (let i = 0; i < contestSections[0].data.sections.length; i++) {
+      sections.push(
+        contestSectionMapper(
+          apiResponse,
+          contestSections[0].data.sections[i],
+          args
+        )
+      );
+    }
+    return sections;
+  } catch {
+    return [];
+  }
+};
 export const resolvers = () => {
   return {
     Query: {
-      contestSections: async (
-        parent: unknown,
-        args: ContestSectionsArgs,
-        context: ExpressContext,
-        info: unknown
-      ) => {
-        // const arguments = {
-        //   siteId: SITE_ID_MAP[args.site],
-        //   site: args.site,
-        //   tourId: args.tourId,
-        //   roundId: args.matchId,
-        // };
-        const roundRequestData = {
-          roundId: args.matchId,
-          site: args.site,
-        };
-        try {
-          const roundTourSquad = await nativePostRequest(
-            "/roundTourSquad",
-            defaultHeaders,
-            roundRequestData
-          );
-          const roundInfo = {
-            round: roundTourSquad["round"],
-            currentDateTime: Date.now(),
-          };
-          const contestSections = await fetchContestSectionAndJoinedLeagues(
-            context,
-            {
-              site: args.site,
-              roundId: args.matchId,
-              siteId: SITE_ID_MAP[args.site],
-              tourId: args.tourId,
-            },
-            roundInfo
-          );
-          const apiResponse = {
-            sections: contestSections[0],
-            joinedContest: contestSections[0],
-            roundTourSquad: roundTourSquad,
-          };
-          const sections = [];
-          for (let i = 0; i < contestSections[0].data.sections.length; i++) {
-            sections.push(
-              contestSectionMapper(
-                apiResponse,
-                contestSections[0].data.sections[i],
-                args
-              )
-            );
-          }
-          return sections;
-        } catch {
-          return [];
-        }
-      },
+      contestSections: contestSectionResolver,
     },
   };
 };

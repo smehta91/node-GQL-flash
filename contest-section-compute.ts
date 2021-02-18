@@ -15,8 +15,8 @@ export const contestSectionMapper = (
   const sectionConfig = section.sectionConfig
     ? section.sectionConfig
     : {};
-  const displayContests = []
-  for(let i=0; i< sectionConfig.showCardCount; i++) {
+  const displayContests = [contestCompute(apiResponse, section.leagues[0], args)]
+  for(let i=1; i< sectionConfig.showCardCount; i++) {
     displayContests.push(contestCompute(apiResponse, section.leagues[i], args))
   }
   return {
