@@ -31,10 +31,6 @@ export const nativePostRequest = (path: string, headers: object, body: any) => {
     })
     .then((res: any) => {
       return new Promise((resolve, reject) => {
-        if (parseCache.has(res.headers.etag)) {
-          resolve(parseCache.get(res.headers.etag));
-          return;
-        }
         res.body.setEncoding("utf8");
         let stringResponse = "";
         res.body.on("data", (chunk: any) => {
@@ -43,8 +39,12 @@ export const nativePostRequest = (path: string, headers: object, body: any) => {
         res.body.on("end", () => {
           let parsedResponse;
           try {
-            parsedResponse = JSON.parse(stringResponse);
-            parseCache.set(res.headers.etag, parsedResponse);
+            if (parseCache.has(res.headers.etag)) {
+              parsedResponse = parseCache.get(res.headers.etag);
+            } else {
+              parsedResponse = JSON.parse(stringResponse);
+              parseCache.set(res.headers.etag, parsedResponse);
+            }
           } catch {
             parsedResponse = stringResponse;
           }
