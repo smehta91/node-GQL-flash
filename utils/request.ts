@@ -19,10 +19,9 @@ const parseCache = new LRU({
   max: 300,
   maxAge: 300000 // 5 mins
 });
-const client = new undici.Client(config.baseURL);
-
+const clientPool = new undici.Pool(config.baseURL)
 export const nativePostRequest = (path: string, headers: object, body: any) => {
-  return client
+  return clientPool
     .request({
       path,
       method: "POST",
